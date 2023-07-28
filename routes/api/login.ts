@@ -5,26 +5,21 @@ export const handler: Handlers = {
   async POST(req: Request) {
     try {
       const body = await req.json();
-      console.log("body", body);
-      const newUser = await faunaClient.query(
-        q.Create(
-          q.Collection("User"),
-          {
-            credentials: { password: body.password },
-            data: {
-              email: body.email,
-              username: body.username,
-            },
-          },
+
+      const authUser: any = await faunaClient.query(
+        q.Login(
+          q.Match(q.FaunaIndex("users_by_email"), body.email),
+          { password: body.password },
         ),
       );
 
       return Response.json({
         data: {
-          ...newUser.data,
+          token: authUser.secret,
         },
       });
     } catch (error) {
+      console.log("==>>>", error);
       return Response.json({
         error: error.message,
       });

@@ -2,45 +2,43 @@ import * as faunadb from "https://deno.land/x/fauna@5.0.0-deno-alpha9/mod.js";
 
 const q = faunadb.query as any;
 
-const faunaClient = new faunadb.Client({ 
+const faunaClient = new faunadb.Client({
   domain: Deno.env.get("FAUNA_DOMAIN"),
   secret: Deno.env.get("FAUNA_ADMIN_SECRET"),
 });
 
-
 // Create Post, Comment, User, collections
 await faunaClient.query(
-  q.CreateCollection({ name: 'Post' })
+  q.CreateCollection({ name: "Post" }),
 );
 await faunaClient.query(
-  q.CreateCollection({ name: 'Comment' })
+  q.CreateCollection({ name: "Comment" }),
 );
 await faunaClient.query(
-  q.CreateCollection({ name: 'User' })
+  q.CreateCollection({ name: "User" }),
 );
 
-console.log('Created Post, Comment, User collections');
-
+console.log("Created Post, Comment, User collections");
 
 await faunaClient.query(
   q.CreateIndex({
-    name: 'comments_by_post',
-    source: q.Collection('Comment'),
+    name: "comments_by_post",
+    source: q.Collection("Comment"),
     terms: [
-      { field: ['data', 'postId'] },
-    ]
-  })
-)
+      { field: ["data", "postId"] },
+    ],
+  }),
+);
 
 await faunaClient.query(
   q.CreateIndex({
-    name: 'users_by_email',
-    source: q.Collection('User'),
+    name: "users_by_email",
+    source: q.Collection("User"),
     terms: [
-      { field: ['data', 'email'] },
-    ]
-  })
-)
+      { field: ["data", "email"] },
+    ],
+  }),
+);
 
 // Create a UnAuthenticated role
 await faunaClient.query(
@@ -56,8 +54,8 @@ await faunaClient.query(
           delete: false,
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
+          unrestricted_read: false,
+        },
       },
       {
         resource: q.Collection("Post"),
@@ -68,8 +66,8 @@ await faunaClient.query(
           delete: false,
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
+          unrestricted_read: false,
+        },
       },
       {
         resource: q.Collection("Comment"),
@@ -80,39 +78,37 @@ await faunaClient.query(
           delete: false,
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
+          unrestricted_read: false,
+        },
       },
       {
         resource: q.FaunaIndex("users_by_email"),
         actions: {
           unrestricted_read: false,
-          read: true
-        }
+          read: true,
+        },
       },
       {
         resource: q.FaunaIndex("comments_by_post"),
         actions: {
           unrestricted_read: false,
-          read: true
-        }
-      }
-    ]
-  })
+          read: true,
+        },
+      },
+    ],
+  }),
 );
 
 // setTimeout( async () => {
 // }, 1000);
-
-
 
 await faunaClient.query(
   q.CreateRole({
     name: "AuthRole",
     membership: [
       {
-        resource: q.Collection("User")
-      }
+        resource: q.Collection("User"),
+      },
     ],
     privileges: [
       {
@@ -123,25 +119,31 @@ await faunaClient.query(
             q.Lambda(
               ["oldData", "newData"],
               q.And(
-                q.Equals(q.Identity(), q.Select(["data", "owner"], q.Var("oldData"))),
+                q.Equals(
+                  q.Identity(),
+                  q.Select(["data", "owner"], q.Var("oldData")),
+                ),
                 q.Equals(
                   q.Select(["data", "owner"], q.Var("oldData")),
-                  q.Select(["data", "owner"], q.Var("newData"))
-                )
-              )
-            )
+                  q.Select(["data", "owner"], q.Var("newData")),
+                ),
+              ),
+            ),
           ),
           create: true,
           delete: q.Query(
             q.Lambda(
               "ref",
-              q.Equals(q.Identity(), q.Select(["data", "owner"], q.Get(q.Var("ref"))))
-            )
+              q.Equals(
+                q.Identity(),
+                q.Select(["data", "owner"], q.Get(q.Var("ref"))),
+              ),
+            ),
           ),
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
+          unrestricted_read: false,
+        },
       },
       {
         resource: q.Collection("User"),
@@ -152,8 +154,8 @@ await faunaClient.query(
           delete: false,
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
+          unrestricted_read: false,
+        },
       },
       {
         resource: q.Collection("Comment"),
@@ -164,27 +166,30 @@ await faunaClient.query(
           delete: q.Query(
             q.Lambda(
               "ref",
-              q.Equals(q.Identity(), q.Select(["data", "owner"], q.Get(q.Var("ref"))))
-            )
+              q.Equals(
+                q.Identity(),
+                q.Select(["data", "owner"], q.Get(q.Var("ref"))),
+              ),
+            ),
           ),
           history_read: false,
           history_write: false,
-          unrestricted_read: false
-        }
-      }
-    ]
-  })
+          unrestricted_read: false,
+        },
+      },
+    ],
+  }),
 );
 
 const secrect = await faunaClient.query(
   q.CreateKey({
-    role: q.Role('UnAuthRole'),
+    role: q.Role("UnAuthRole"),
     data: {
-      name: 'For Unauthenticated Users',
+      name: "For Unauthenticated Users",
     },
-  })
+  }),
 );
 
-console.log('Use the following key as FAUNA_SECRET in .env file: -->');
+console.log("Use the following key as FAUNA_SECRET in .env file: -->");
 
 console.log(secrect.secret);

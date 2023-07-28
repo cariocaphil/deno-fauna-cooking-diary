@@ -1,5 +1,5 @@
-
-const logoStyle = `inline-flex items-center border-b-2 border-purple-500 px-1 pt-1 text-sm font-medium text-gray-900`;
+const logoStyle =
+  `inline-flex items-center border-b-2 border-purple-500 px-1 pt-1 text-sm font-medium text-gray-900`;
 
 export default function Navbar() {
   return (
@@ -8,7 +8,7 @@ export default function Navbar() {
         <div class="flex h-16 justify-between">
           <div class="flex">
             <div class="ml-6 flex space-x-8">
-              <a 
+              <a
                 href="/"
                 class={logoStyle}
               >

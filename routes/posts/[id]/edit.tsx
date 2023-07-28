@@ -1,6 +1,5 @@
 import { Handlers, PageProps } from "$fresh/server.ts";
 import PostForm from "../../../islands/PostForm.tsx";
-import { Fragment } from "preact";
 
 export const handler: Handlers = {
   GET(_req, ctx) {
@@ -13,10 +12,10 @@ export const handler: Handlers = {
 
 export default function EditPostPage(props: PageProps) {
   return (
-    <Fragment>
+    <>
       <div class="p-4 mx-auto max-w-screen-md">
         <PostForm />
       </div>
-    </Fragment>
-  )
+    </>
+  );
 }
