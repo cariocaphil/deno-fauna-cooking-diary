@@ -31,8 +31,11 @@ export default function PostPage(props: PageProps) {
   }
   return (
     <div class="p-4 mx-auto max-w-screen-md">
+        <br></br>
+        <br></br>
+
       <h1 class="text-xl pl-4">{post.title}</h1>
-      <div class="text-sm font-bold pl-4">By {post.author}</div>
+      <br></br>
       <p class="pl-4 text-left">{post.content}</p>
       <DeleteButton post={post} />
     </div>

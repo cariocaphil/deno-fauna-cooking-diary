@@ -12,7 +12,7 @@ export default function Navbar() {
                 href="/"
                 class={logoStyle}
               >
-                Fresh Blogs 🌿
+                Phil's Cooking 🧑‍🍳
               </a>
             </div>
           </div>

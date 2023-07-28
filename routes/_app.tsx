@@ -4,8 +4,8 @@ import Navbar from "../components/Navbar.tsx";
 export default function App({ Component }: AppProps) {
   return (
     <>
-      <Component />
       <Navbar />
+      <Component />
     </>
   );
 }

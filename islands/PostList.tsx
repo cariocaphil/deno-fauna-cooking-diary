@@ -20,8 +20,8 @@ export default function PostList() {
   console.log(posts);
 
   return (
-    <div class="p-5">
-      <h1 class="text-xl">Post List</h1>
+    <div>
+      <h1>Things I cooked up for myself and ate:</h1>
       {posts.map((post: any) => <PostItem post={post} id={post._id} />)}
     </div>
   );
@@ -29,9 +29,11 @@ export default function PostList() {
 
 function PostItem({ post, id }: { post: any; id: string }) {
   return (
-    <div class="p-5">
-      <h4 class="text-md mb-3">{post.title}</h4>
-      <a class="border mt-1 p-2 cursor:pointer" href={`/posts/${id}`}>View</a>
+    <div>
+        <br></br>
+      <br></br>
+      <a class="border mt-1 p-2 cursor:pointer" href={`/posts/${id}`}>{post.title}</a>
+      <br></br>
     </div>
   );
 }
